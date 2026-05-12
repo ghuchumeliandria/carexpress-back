@@ -14,7 +14,7 @@ import { AdminModule } from './admin/admin.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env', '../../.env'] }),
-    MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://localhost:27017/carexpress'),
+    MongooseModule.forRoot(process.env.MONGODB_URI!),
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 60 }]),
     CacheModule.register({ isGlobal: true, ttl: 60_000 }),
     AuthModule,
