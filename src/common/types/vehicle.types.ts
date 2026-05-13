@@ -116,6 +116,20 @@ export interface Recall {
   description?: string;
   status?: string;
   source?: string;
+  component?: string;
+  consequence?: string;
+  remedy?: string;
+}
+
+export interface Complaint {
+  date?: string;
+  component?: string;
+  summary?: string;
+  crash?: boolean;
+  fire?: boolean;
+  injured?: number;
+  deaths?: number;
+  source?: string;
 }
 
 export interface ServiceHighlight {
@@ -160,5 +174,6 @@ export interface FullReport {
   owners?: OwnerRecord[];
   accidentEvents?: AccidentEvent[];
   recalls?: Recall[];
+  complaints?: Complaint[];
   serviceHighlights?: ServiceHighlight[];
 }

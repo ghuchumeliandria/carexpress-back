@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import {
   AccidentEvent,
+  Complaint,
   DecodedVehicle,
   HistoryEvent,
   OwnerRecord,
@@ -36,6 +37,7 @@ export class Vehicle {
   @Prop({ type: [Object], default: undefined }) owners?: OwnerRecord[];
   @Prop({ type: [Object], default: undefined }) accidentEvents?: AccidentEvent[];
   @Prop({ type: [Object], default: undefined }) recalls?: Recall[];
+  @Prop({ type: [Object], default: undefined }) complaints?: Complaint[];
   @Prop({ type: [Object], default: undefined }) serviceHighlights?: ServiceHighlight[];
 
   @Prop({ default: () => new Date() }) fetchedAt!: Date;

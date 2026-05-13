@@ -5,6 +5,8 @@ import { VinService } from './vin.service';
 import { VinController } from './vin.controller';
 import { VinAggregatorService } from './vin.aggregator';
 import { NhtsaProvider } from './providers/nhtsa.provider';
+import { NhtsaRecallsProvider } from './providers/nhtsa-recalls.provider';
+import { NhtsaComplaintsProvider } from './providers/nhtsa-complaints.provider';
 import { AutoDevProvider } from './providers/autodev.provider';
 import { EpicVinProvider } from './providers/epicvin.provider';
 import { StubHistoryProvider } from './providers/stub-history.provider';
@@ -30,13 +32,22 @@ import { AuthModule } from '@/auth/auth.module';
     VinService,
     VinAggregatorService,
     NhtsaProvider,
+    NhtsaRecallsProvider,
+    NhtsaComplaintsProvider,
     AutoDevProvider,
     EpicVinProvider,
     StubHistoryProvider,
     {
       provide: VIN_PROVIDERS,
       useFactory: (...providers: IVinProvider[]) => providers,
-      inject: [NhtsaProvider, AutoDevProvider, EpicVinProvider, StubHistoryProvider],
+      inject: [
+        NhtsaProvider,
+        NhtsaRecallsProvider,
+        NhtsaComplaintsProvider,
+        AutoDevProvider,
+        EpicVinProvider,
+        StubHistoryProvider,
+      ],
     },
   ],
   exports: [VinService, VIN_PROVIDERS],

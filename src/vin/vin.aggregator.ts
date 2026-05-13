@@ -1,8 +1,10 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
+  Complaint,
   DecodedVehicle,
   FullReport,
   HistoryEvent,
+  Recall,
   SalvageRecord,
   VehicleImage,
 } from '@/common/types/vehicle.types';
@@ -43,21 +45,36 @@ export class VinAggregatorService {
   }
 
   async history(vin: string): Promise<{ data: HistoryEvent[]; sources: string[] }> {
-    return this.collectArray(vin, 'history', (p) => p.getHistory!(vin));
+    return this.collectArray('history', (p) => p.getHistory!(vin));
   }
   async salvage(vin: string): Promise<{ data: SalvageRecord[]; sources: string[] }> {
-    return this.collectArray(vin, 'salvage', (p) => p.getSalvage!(vin));
+    return this.collectArray('salvage', (p) => p.getSalvage!(vin));
   }
   async images(vin: string): Promise<{ data: VehicleImage[]; sources: string[] }> {
-    return this.collectArray(vin, 'images', (p) => p.getImages!(vin));
+    return this.collectArray('images', (p) => p.getImages!(vin));
+  }
+  async recalls(
+    vin: string,
+    decoded: DecodedVehicle,
+  ): Promise<{ data: Recall[]; sources: string[] }> {
+    return this.collectArray('recalls', (p) => p.getRecalls!(vin, decoded));
+  }
+  async complaints(
+    vin: string,
+    decoded: DecodedVehicle,
+  ): Promise<{ data: Complaint[]; sources: string[] }> {
+    return this.collectArray('complaints', (p) => p.getComplaints!(vin, decoded));
   }
 
   async fullReport(vin: string): Promise<Omit<FullReport, 'cached' | 'fetchedAt'>> {
-    const [d, h, s, i] = await Promise.all([
-      this.decode(vin),
+    // Decode first — recalls & complaints providers need make/model/year.
+    const d = await this.decode(vin);
+    const [h, s, i, r, c] = await Promise.all([
       this.history(vin),
       this.salvage(vin),
       this.images(vin),
+      this.recalls(vin, d.data),
+      this.complaints(vin, d.data),
     ]);
     return {
       vin,
@@ -65,12 +82,15 @@ export class VinAggregatorService {
       history: h.data,
       salvage: s.data,
       images: i.data,
-      providers: Array.from(new Set([...d.sources, ...h.sources, ...s.sources, ...i.sources])),
+      recalls: r.data,
+      complaints: c.data,
+      providers: Array.from(
+        new Set([...d.sources, ...h.sources, ...s.sources, ...i.sources, ...r.sources, ...c.sources]),
+      ),
     };
   }
 
   private async collectArray<T>(
-    vin: string,
     cap: VinCapability,
     fn: (p: IVinProvider) => Promise<T[]>,
   ): Promise<{ data: T[]; sources: string[] }> {
