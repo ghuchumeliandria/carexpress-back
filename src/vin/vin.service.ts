@@ -43,14 +43,14 @@ export class VinService {
     if (!opts.force) {
       const cached = await this.vehicleModel.findOne({ vin }).lean();
       if (cached && cached.expiresAt > new Date()) {
+        // Strip Mongo metadata, then surface every persisted field
+        // (recalls, complaints, owners, summary, retailValue, etc.).
+        const { _id, __v, expiresAt, fetchedAt, ...rest } = cached as Record<string, unknown> & {
+          fetchedAt: Date;
+        };
         return {
-          vin: cached.vin,
-          decoded: cached.decoded,
-          history: cached.history,
-          salvage: cached.salvage,
-          images: cached.images,
-          providers: cached.providers,
-          fetchedAt: cached.fetchedAt.toISOString(),
+          ...(rest as Omit<FullReport, 'fetchedAt' | 'cached'>),
+          fetchedAt: fetchedAt.toISOString(),
           cached: true,
         };
       }

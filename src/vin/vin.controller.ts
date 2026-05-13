@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import { VinService } from './vin.service';
 import { VinParamDto } from './dto/vin.dto';
@@ -21,8 +21,12 @@ export class VinController {
   }
 
   @Get(':vin/full')
-  async full(@Param() p: VinParamDto, @Req() req: Request) {
-    const out = await this.vin.getReport(p.vin);
+  async full(
+    @Param() p: VinParamDto,
+    @Req() req: Request,
+    @Query('force') force?: string,
+  ) {
+    const out = await this.vin.getReport(p.vin, { force: force === '1' || force === 'true' });
     await this.recordSearch(req, p.vin);
     return out;
   }
