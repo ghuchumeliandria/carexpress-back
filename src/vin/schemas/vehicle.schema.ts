@@ -5,9 +5,11 @@ import {
   Complaint,
   DecodedVehicle,
   HistoryEvent,
+  Investigation,
   OwnerRecord,
   Recall,
   ReportSummary,
+  SafetyRating,
   SalvageRecord,
   ServiceHighlight,
   VehicleImage,
@@ -38,6 +40,8 @@ export class Vehicle {
   @Prop({ type: [Object], default: undefined }) accidentEvents?: AccidentEvent[];
   @Prop({ type: [Object], default: undefined }) recalls?: Recall[];
   @Prop({ type: [Object], default: undefined }) complaints?: Complaint[];
+  @Prop({ type: [Object], default: undefined }) safetyRatings?: SafetyRating[];
+  @Prop({ type: [Object], default: undefined }) investigations?: Investigation[];
   @Prop({ type: [Object], default: undefined }) serviceHighlights?: ServiceHighlight[];
 
   @Prop({ default: () => new Date() }) fetchedAt!: Date;

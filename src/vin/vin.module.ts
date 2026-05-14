@@ -7,8 +7,11 @@ import { VinAggregatorService } from './vin.aggregator';
 import { NhtsaProvider } from './providers/nhtsa.provider';
 import { NhtsaRecallsProvider } from './providers/nhtsa-recalls.provider';
 import { NhtsaComplaintsProvider } from './providers/nhtsa-complaints.provider';
+import { NhtsaSafetyProvider } from './providers/nhtsa-safety.provider';
+import { NhtsaInvestigationsProvider } from './providers/nhtsa-investigations.provider';
 import { AutoDevProvider } from './providers/autodev.provider';
 import { EpicVinProvider } from './providers/epicvin.provider';
+import { VinAuditProvider } from './providers/vinaudit.provider';
 import { StubHistoryProvider } from './providers/stub-history.provider';
 import { IVinProvider, VIN_PROVIDERS } from './providers/vin-provider.interface';
 import { SearchHistoryModule } from '@/search-history/search-history.module';
@@ -34,8 +37,11 @@ import { AuthModule } from '@/auth/auth.module';
     NhtsaProvider,
     NhtsaRecallsProvider,
     NhtsaComplaintsProvider,
+    NhtsaSafetyProvider,
+    NhtsaInvestigationsProvider,
     AutoDevProvider,
     EpicVinProvider,
+    VinAuditProvider,
     StubHistoryProvider,
     {
       provide: VIN_PROVIDERS,
@@ -44,8 +50,11 @@ import { AuthModule } from '@/auth/auth.module';
         NhtsaProvider,
         NhtsaRecallsProvider,
         NhtsaComplaintsProvider,
+        NhtsaSafetyProvider,
+        NhtsaInvestigationsProvider,
         AutoDevProvider,
         EpicVinProvider,
+        VinAuditProvider,
         StubHistoryProvider,
       ],
     },

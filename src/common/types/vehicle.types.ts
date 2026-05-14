@@ -132,6 +132,39 @@ export interface Complaint {
   source?: string;
 }
 
+/**
+ * NHTSA Safety Ratings — 5-star scores per crash test scenario.
+ * Each rating is a number 0-5 (or -1 / 0 if "not rated").
+ */
+export interface SafetyRating {
+  vehicleDescription?: string;
+  overallRating?: number | string;
+  overallFrontCrashRating?: number | string;
+  overallSideCrashRating?: number | string;
+  rolloverRating?: number | string;
+  rolloverRiskPercent?: number;
+  frontCrashDriversideRating?: number | string;
+  frontCrashPassengersideRating?: number | string;
+  sideCrashDriversideRating?: number | string;
+  sideCrashPassengersideRating?: number | string;
+  sidePoleCrashRating?: number | string;
+  source?: string;
+}
+
+/**
+ * NHTSA federal investigations against a make/model/year.
+ * https://api.nhtsa.gov/investigations/investigationsByVehicle
+ */
+export interface Investigation {
+  date?: string;
+  campaignNumber?: string;
+  type?: string;       // 'PE' (preliminary eval), 'EA' (engineering analysis), etc.
+  status?: string;
+  component?: string;
+  summary?: string;
+  source?: string;
+}
+
 export interface ServiceHighlight {
   date: string;
   service: string;
@@ -175,5 +208,7 @@ export interface FullReport {
   accidentEvents?: AccidentEvent[];
   recalls?: Recall[];
   complaints?: Complaint[];
+  safetyRatings?: SafetyRating[];
+  investigations?: Investigation[];
   serviceHighlights?: ServiceHighlight[];
 }

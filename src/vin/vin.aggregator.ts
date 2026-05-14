@@ -4,7 +4,9 @@ import {
   DecodedVehicle,
   FullReport,
   HistoryEvent,
+  Investigation,
   Recall,
+  SafetyRating,
   SalvageRecord,
   VehicleImage,
 } from '@/common/types/vehicle.types';
@@ -65,16 +67,30 @@ export class VinAggregatorService {
   ): Promise<{ data: Complaint[]; sources: string[] }> {
     return this.collectArray('complaints', (p) => p.getComplaints!(vin, decoded));
   }
+  async safetyRatings(
+    vin: string,
+    decoded: DecodedVehicle,
+  ): Promise<{ data: SafetyRating[]; sources: string[] }> {
+    return this.collectArray('safety_ratings', (p) => p.getSafetyRatings!(vin, decoded));
+  }
+  async investigations(
+    vin: string,
+    decoded: DecodedVehicle,
+  ): Promise<{ data: Investigation[]; sources: string[] }> {
+    return this.collectArray('investigations', (p) => p.getInvestigations!(vin, decoded));
+  }
 
   async fullReport(vin: string): Promise<Omit<FullReport, 'cached' | 'fetchedAt'>> {
-    // Decode first — recalls & complaints providers need make/model/year.
+    // Decode first — recalls/complaints/safety/investigations providers need make/model/year.
     const d = await this.decode(vin);
-    const [h, s, i, r, c] = await Promise.all([
+    const [h, s, i, r, c, sr, inv] = await Promise.all([
       this.history(vin),
       this.salvage(vin),
       this.images(vin),
       this.recalls(vin, d.data),
       this.complaints(vin, d.data),
+      this.safetyRatings(vin, d.data),
+      this.investigations(vin, d.data),
     ]);
     return {
       vin,
@@ -84,8 +100,19 @@ export class VinAggregatorService {
       images: i.data,
       recalls: r.data,
       complaints: c.data,
+      safetyRatings: sr.data,
+      investigations: inv.data,
       providers: Array.from(
-        new Set([...d.sources, ...h.sources, ...s.sources, ...i.sources, ...r.sources, ...c.sources]),
+        new Set([
+          ...d.sources,
+          ...h.sources,
+          ...s.sources,
+          ...i.sources,
+          ...r.sources,
+          ...c.sources,
+          ...sr.sources,
+          ...inv.sources,
+        ]),
       ),
     };
   }

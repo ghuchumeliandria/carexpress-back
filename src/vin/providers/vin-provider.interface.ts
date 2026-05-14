@@ -2,7 +2,9 @@ import {
   Complaint,
   DecodedVehicle,
   HistoryEvent,
+  Investigation,
   Recall,
+  SafetyRating,
   SalvageRecord,
   VehicleImage,
 } from '@/common/types/vehicle.types';
@@ -14,8 +16,8 @@ import {
  *   so high-priority values win (paid providers > free).
  * - All capability methods are optional. The aggregator only calls what the
  *   provider declares it can do via `capabilities`.
- * - `getRecalls` / `getComplaints` receive the decoded vehicle because most
- *   recall/complaint APIs key by make/model/year rather than VIN directly.
+ * - Capability methods that need make/model/year (recalls, complaints,
+ *   safety ratings, investigations) receive the merged decoded vehicle.
  */
 export type VinCapability =
   | 'decode'
@@ -23,7 +25,9 @@ export type VinCapability =
   | 'salvage'
   | 'images'
   | 'recalls'
-  | 'complaints';
+  | 'complaints'
+  | 'safety_ratings'
+  | 'investigations';
 
 export const VIN_PROVIDERS = Symbol('VIN_PROVIDERS');
 
@@ -40,4 +44,6 @@ export interface IVinProvider {
   getImages?(vin: string): Promise<VehicleImage[]>;
   getRecalls?(vin: string, decoded: DecodedVehicle): Promise<Recall[]>;
   getComplaints?(vin: string, decoded: DecodedVehicle): Promise<Complaint[]>;
+  getSafetyRatings?(vin: string, decoded: DecodedVehicle): Promise<SafetyRating[]>;
+  getInvestigations?(vin: string, decoded: DecodedVehicle): Promise<Investigation[]>;
 }
